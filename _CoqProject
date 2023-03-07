@@ -1,10 +1,10 @@
 -Q theories CoqRefinements
--Q theories/coq_tactical CoqTactical
--Q theories/plf PLF
+-Q coq_tactical CoqTactical
+-Q plf PLF
 -arg -w -arg -notation-overridden
 
-theories/plf/LibTactics.v
-theories/coq_tactical/SimplMatch.v
+plf/LibTactics.v
+coq_tactical/SimplMatch.v
 theories/MapTactics.v
 theories/Tactics.v
 theories/Prelude.v
@@ -12,3 +12,4 @@ theories/Induction.v
 theories/Arithmetic.v
 theories/Types.v
 theories/Common.v
+theories/Ack.v
