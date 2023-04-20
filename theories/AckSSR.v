@@ -33,8 +33,23 @@ Canonical natint_latticeType := LatticeType natint natint_totalorderMixin.
 Canonical natint_distrLatticeType := DistrLatticeType natint natint_totalorderMixin.
 Canonical natint_orderType := OrderType natint natint_totalorderMixin.
 
+(*
+Lemma apply_natint (i1 : int) (P1 : 0%:Z <= i1) (i2 : int) (P2 : 0%:Z <= i2) :
+  i1 = i2 ->
+*)
+
 Lemma natint_pos (n : natint) : (0 <= (n : int)).
 Proof. by case: n. Qed.
+
+Lemma natint_nat (n : natint) : ival n = nat_of_ni n.
+Proof.
+case: n=>n Hn /=.
+rewrite /nat_of_ni /=.
+by apply/esym/gez0_abs.
+Qed.
+
+Definition Sni (n : natint) : natint :=
+  NatInt ((nat_of_ni n).+1) isT.
 
 Lemma natint_gt (n : natint) : (0 < (n : int)) -> exists m mprf, n = NatInt m.+1 mprf.
 Proof.
@@ -176,5 +191,51 @@ apply: IH.
 rewrite ltEprodlexi /= !leEsub ltEsub /=.
 by rewrite lexx /= ltz_nat subn1.
 Qed.
+
+Theorem ack_snd_plus_one (m n : natint): ack m n < ack m (Sni n).
+Proof.
+move: (natint_pos m); rewrite le_eqVlt; case/orP.
+- rewrite (_ : 0 = ival Zni) // =>/eqP/val_inj <-.
+  rewrite /Zni /Sni; simp ack=>/=.
+  by rewrite ltEsub /= ltr_add2r natint_nat ltz_nat.
+case/natint_gt=>m' [Hm' Em]; rewrite {m}Em.
+rewrite /Sni; simp ack=>/=.
+rewrite ltEsub /=.
+set x := (NatInt ((m'.+1 : int) - 1) (ack_obligation_4 m' Hm' (nat_of_ni n) isT (fun x x0 : natint => fun=> ack x x0))).
+set y := (NatInt m'.+1 Hm').
+congr (ack _ _ < ack _ (ack _ _)) : (ack_gt_snd x (ack y n)).
+apply: val_inj=>/=.
+by rewrite natint_nat -predn_int.
+Qed.
+
+Theorem ack_mon_snd (m n : natint) (p : {v : natint | v < n}): ack m (val p) < ack m n.
+Proof.
+move: n m p; apply: nat_lt_ind =>n IH m p.
+case: (eqVneq n (Sni (val p)))=>[{3}->|N].
+- by exact: ack_snd_plus_one.
+have Hnm1 : 0%Z <= ival n - 1.
+- case: {N}p=>p; rewrite ltEsub /= => Hpn.
+  move: (natint_pos p) => Zp.
+  move: (le_lt_trans Zp Hpn)=>H0.
+  by rewrite subr_ge0; case: (intP (ival n)) H0.
+set nm1 := NatInt (ival n - 1) Hnm1.
+have Hp' : val p < nm1.
+- case: p N=>/= p.
+  rewrite !ltEsub -val_eqE /=.
+  rewrite -lez_addr1 le_eqVlt; case/orP.
+  - move/eqP=><-; apply: contra_neqT=>_.
+    by rewrite natint_nat -PoszD addn1.
+  by move=>/[swap] _; rewrite ltr_subr_addl addrC.
+have Hnm1n : nm1 < n.
+- by rewrite ltEsub /= -{2}(subr0 (ival n)) ltr_add2l.
+apply: lt_trans.
+- by apply: (IH _ Hnm1n _ (exist _ (val p) Hp')).
+congr (ack _ _ < ack _ _) : (ack_snd_plus_one m nm1).
+apply/val_inj=>/=; rewrite /nm1 /=.
+by rewrite -addn1 PoszD -natint_nat /= addrK.
+Qed.
+
+
+
 
 End NatInt.
