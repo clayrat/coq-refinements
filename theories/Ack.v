@@ -22,14 +22,13 @@ Require Import Program.Utils. (* for 'dec' *)
   (Telescopes.ext Nat (fun _ : Nat => Telescopes.tip Nat))
   (Z * Z) (fun m n : Nat => ((` m)%prg, (` n)%prg))
   (lexprod Z Z (Zwf 0) (Zwf 0))).
-  repeat red; intros;
-  unfold Telescopes.tele_measure;
+  repeat red; intros; unfold Telescopes.tele_measure.
   (* constructor. *)
-  apply Inverse_Image.Acc_inverse_image;  apply acc_A_B_lexprod; apply Zwf_well_founded.
+  apply Inverse_Image.Acc_inverse_image; apply acc_A_B_lexprod; apply Zwf_well_founded.
 Qed.
 
 
-Equations? ack (m n:Nat)  : Nat by wf (` m, ` n) (lexprod Z Z (Zwf 0) (Zwf 0)) :=
+Equations? ack (m n:Nat) : Nat by wf (` m, ` n) (lexprod Z Z (Zwf 0) (Zwf 0)) :=
 ack m n := match dec ( `m =? 0) with
   | left em =>
       (upcastDef (add n (`` 1)))
