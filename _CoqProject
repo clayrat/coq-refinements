@@ -12,4 +12,5 @@ theories/Induction.v
 theories/Arithmetic.v
 theories/Types.v
 theories/Common.v
+theories/ExamplesNat.v
 theories/Ack.v

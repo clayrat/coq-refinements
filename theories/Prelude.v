@@ -15,8 +15,8 @@ Open Scope Z_scope.
 
 (* Refined Int Functions *)
 Definition add {P Q} (m:Int P)  (n:Int Q) :=
-exist _ (` m + ` n) eq_refl
-: Int (fun v => v = ` m + ` n).
+  exist _ (` m + ` n) eq_refl
+  : Int (fun v => v = ` m + ` n).
 
 Definition sub {P Q} (m:Int P) (n:Int Q) :=
   exist _ (` m - ` n) eq_refl
@@ -76,7 +76,7 @@ Definition gt {P Q} (m:Int P) (n:Int Q) :=
 (* TESTS *)
 Definition ge5_ge0 (n:{v:Z| v>=5}) : {v:Z| v>=0}. upcast n. Defined.
 
-Definition add_nats_nat (m n:Nat):Nat.
+Definition add_nats_nat (m n:NNat):NNat.
 infer (add m n).
 Defined.
 
@@ -100,9 +100,9 @@ Require Import ssreflect.
 
 Definition sub_5_4_nat: {v:Z | v<>0}. upcast (sub (triv 5) (triv 4)). Defined.
 
-Definition mul_nats_nat (m n:Nat):Nat.
+Definition mul_nats_nat (m n:NNat):NNat.
 infer (mul m n).
 Defined.
 
-Definition gem1_ltm1_nat (m:{v:Z| v>= -1}) (H: ` m > -1): Nat. exists (`m). lia. Defined.
+Definition gem1_ltm1_nat (m:{v:Z| v>= -1}) (H: ` m > -1): NNat. exists (`m). lia. Defined.
 
